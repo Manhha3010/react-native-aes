@@ -15,26 +15,19 @@ import {
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 
 var Aes = NativeModules.Aes;
-
+// tạo key có độ dài length từ password và salt
 const generateKey = (password, salt, cost, length) =>
   Aes.pbkdf2(password, salt, cost, length);
 
+// mã hóa text với key và iv
 const encrypt = (text, key) => {
+  // tạo iv ngẫu nhiên có độ dài 16 byte
   return Aes.randomKey(16).then(iv => {
     return Aes.encrypt(text, key, iv, 'aes-256-cbc').then(cipher => ({
       cipher,
       iv,
     }));
   });
-};
-const decrypt = async (encryptedData, key) => {
-  console.log({encryptedData, key});
-  return Aes.decrypt(
-    encryptedData.cipher,
-    key,
-    encryptedData.iv,
-    'aes-256-cbc',
-  );
 };
 
 export function EncryptScreen() {
@@ -45,12 +38,10 @@ export function EncryptScreen() {
   const [salt, setSalt] = useState('');
 
   const getData = async () => {
+    // tạo key từ password và salt có độ dài 256 bit (32 byte)
     generateKey(password, salt, 128, 256).then(key => {
-      console.log('Key:', key);
       encrypt(text, key)
         .then(({cipher, iv}) => {
-          console.log('ivvv', iv);
-          console.log('Encrypted:', cipher);
           setData({cipher, iv, key});
         })
         .catch(error => {

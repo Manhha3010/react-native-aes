@@ -39,29 +39,13 @@ const decrypt = async (encryptedData, key) => {
 
 export function DecryptScreen() {
   const isDarkMode = useColorScheme() === 'dark';
-  const [data, setData] = useState({});
   const [dec, setDec] = useState('');
-  const [text, setText] = useState('');
   const [cipher, setCipher] = useState('');
   const [key, setKey] = useState('');
   const [iv, setIv] = useState('');
 
-  const getData = async () => {
-    generateKey('Ninh', 'salt', 128, 256).then(key => {
-      console.log('Key:', key);
-      encrypt(text, key)
-        .then(({cipher, iv}) => {
-          console.log('ivvv', iv);
-          console.log('Encrypted:', cipher);
-          setData({cipher, iv, key});
-        })
-        .catch(error => {
-          console.error(error);
-        });
-    });
-  };
-
   const getDec = async () => {
+    // giải mã với giá trị đã nhập vào input
     decrypt({cipher, iv}, key).then(decrypted => {
       console.log({decrypted});
       setDec(decrypted);
@@ -75,10 +59,10 @@ export function DecryptScreen() {
     outerHeight: '100%',
   };
 
-  useEffect(() => {
-    getData();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  // useEffect(() => {
+  //   getData();
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, []);
 
   return (
     <SafeAreaView style={backgroundStyle}>
